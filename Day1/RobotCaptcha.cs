@@ -7,20 +7,20 @@ namespace Day1
     {
         public int SumContiguous(string input)
         {
-            return Sum(input, position => position + 1 == input.Length ? 0 : position + 1);
+            return Sum(input, currentPosition => currentPosition + 1 == input.Length ? 0 : currentPosition + 1);
         }
 
         public int SumOpposites(string input)
         {
-            return Sum(input, position =>
+            return Sum(input, currentPosition =>
             {
-                var oppositePosition1 = position + input.Length / 2;
+                var oppositePosition = currentPosition + input.Length / 2;
 
-                return oppositePosition1 < input.Length ? oppositePosition1 : oppositePosition1 - input.Length;
+                return oppositePosition < input.Length ? oppositePosition : oppositePosition - input.Length;
             });
         }
 
-        private static int Sum(string input, Func<int, int> targetAction)
+        private static int Sum(string input, Func<int, int> targetPosition)
         {
             var total = 0;
 
@@ -28,9 +28,9 @@ namespace Day1
             {
                 var currentInteger = input[position].ToString();
 
-                var nextInteger = input[targetAction.Invoke(position)].ToString();
+                var targetInteger = input[targetPosition(position)].ToString();
 
-                if (currentInteger == nextInteger) total += int.Parse(currentInteger);
+                if (currentInteger == targetInteger) total += int.Parse(currentInteger);
             }
 
             return total;
