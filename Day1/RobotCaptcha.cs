@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using System;
+using Xunit;
 
 namespace Day1
 {
@@ -6,21 +7,20 @@ namespace Day1
     {
         public int SumContiguous(string input)
         {
-            var total = 0;
-
-            for (var position = 0; position < input.Length; position++)
-            {
-                var currentInteger = input[position].ToString();
-
-                var nextInteger = input[position + 1 == input.Length ? 0 : position + 1].ToString();
-
-                if (currentInteger == nextInteger) total += int.Parse(currentInteger);
-            }
-
-            return total;
+            return Sum(input, position => position + 1 == input.Length ? 0 : position + 1);
         }
 
         public int SumOpposites(string input)
+        {
+            return Sum(input, position =>
+            {
+                var oppositePosition1 = position + input.Length / 2;
+
+                return oppositePosition1 < input.Length ? oppositePosition1 : oppositePosition1 - input.Length;
+            });
+        }
+
+        private static int Sum(string input, Func<int, int> targetAction)
         {
             var total = 0;
 
@@ -28,11 +28,9 @@ namespace Day1
             {
                 var currentInteger = input[position].ToString();
 
-                var proposedPosition = position + input.Length / 2;
+                var nextInteger = input[targetAction.Invoke(position)].ToString();
 
-                var targetInteger = input[proposedPosition < input.Length ? proposedPosition : proposedPosition - input.Length].ToString();
-
-                if (currentInteger == targetInteger) total += int.Parse(currentInteger);
+                if (currentInteger == nextInteger) total += int.Parse(currentInteger);
             }
 
             return total;
