@@ -1,7 +1,7 @@
 ﻿using System;
 using Xunit;
 
-namespace Day1
+namespace AdventOfCode.Solutions.Day1
 {
     public class RobotCaptcha
     {
