@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using Xunit;
@@ -18,20 +19,37 @@ namespace AdventOfCode.Solutions.Day2
                                           .Select(int.Parse)
                                           .OrderBy(i => i);
 
-                total += orderedIntegers.Last() - orderedIntegers.First();
+                var evenlyDivisible = FindEvenlyDivisible(orderedIntegers.ToList());
+
+                total += evenlyDivisible.Item1 / evenlyDivisible.Item2;
             }
 
             return total;
+        }
+
+        private (int, int) FindEvenlyDivisible(IList<int> orderedIntegers)
+        {
+            for (var divisorIndex = 0; divisorIndex < orderedIntegers.Count(); divisorIndex++)
+            {
+                for (var dividentIndex = 0; dividentIndex < orderedIntegers.Count(); dividentIndex++)
+                {
+                    if (dividentIndex == divisorIndex) continue;
+
+                    if (orderedIntegers[divisorIndex] % orderedIntegers[dividentIndex] == 0)
+                        return (orderedIntegers[divisorIndex], orderedIntegers[dividentIndex]);
+                }
+            }
+
+            return (0, 0);
         }
     }
 
     public class ChecksumShould
     {
         [Theory]
-        [InlineData("1 2 3", 2)]
-        [InlineData("9 6 2", 7)]
-        [InlineData(@"9 6 2
-                      1 4 4", 10)]
+        [InlineData("5 9 2 8", 4)]
+        [InlineData("9 4 7 3", 3)]
+        [InlineData(@"3 8 6 5", 2)]
         public void CalculateTheDifferenceBetweenTheHighestAndLowestValues(string input, int expected)
         {
             var checksum = new Checksum();
