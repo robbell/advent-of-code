@@ -8,35 +8,30 @@ namespace AdventOfCode.Solutions.Day2
 {
     public class Checksum
     {
-        public int Sum(string input)
+        public int Calculate(string input)
         {
-            var total = 0;
             var lines = input.Split(Environment.NewLine);
 
-            foreach (var line in lines)
-            {
-                var orderedIntegers = line.Split(' ', StringSplitOptions.RemoveEmptyEntries)
-                                          .Select(int.Parse)
-                                          .OrderBy(i => i);
+            var parsedIntegers = lines
+                .Select(line => line
+                    .Split(new[] {' ', '\t'}, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(int.Parse));
 
-                var evenlyDivisible = FindEvenlyDivisible(orderedIntegers.ToList());
+            var evenlyDivisible = parsedIntegers.Select(integerRow => FindEvenlyDivisible(integerRow.ToList()));
 
-                total += evenlyDivisible.Item1 / evenlyDivisible.Item2;
-            }
-
-            return total;
+            return evenlyDivisible.Select(e => e.Item1 / e.Item2).Sum();
         }
 
         private (int, int) FindEvenlyDivisible(IList<int> orderedIntegers)
         {
-            for (var divisorIndex = 0; divisorIndex < orderedIntegers.Count(); divisorIndex++)
+            for (var divisorIndex = 0; divisorIndex < orderedIntegers.Count; divisorIndex++)
             {
-                for (var dividentIndex = 0; dividentIndex < orderedIntegers.Count(); dividentIndex++)
+                for (var dividendIndex = 0; dividendIndex < orderedIntegers.Count; dividendIndex++)
                 {
-                    if (dividentIndex == divisorIndex) continue;
+                    if (dividendIndex == divisorIndex) continue;
 
-                    if (orderedIntegers[divisorIndex] % orderedIntegers[dividentIndex] == 0)
-                        return (orderedIntegers[divisorIndex], orderedIntegers[dividentIndex]);
+                    if (orderedIntegers[divisorIndex] % orderedIntegers[dividendIndex] == 0)
+                        return (orderedIntegers[divisorIndex], orderedIntegers[dividendIndex]);
                 }
             }
 
@@ -50,11 +45,13 @@ namespace AdventOfCode.Solutions.Day2
         [InlineData("5 9 2 8", 4)]
         [InlineData("9 4 7 3", 3)]
         [InlineData(@"3 8 6 5", 2)]
+        [InlineData(@"3 8 6 5
+                      3 8 6 5", 4)]
         public void CalculateTheDifferenceBetweenTheHighestAndLowestValues(string input, int expected)
         {
             var checksum = new Checksum();
 
-            var result = checksum.Sum(input);
+            var result = checksum.Calculate(input);
 
             result.ShouldBeEquivalentTo(expected);
         }
