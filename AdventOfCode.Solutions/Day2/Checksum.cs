@@ -10,28 +10,28 @@ namespace AdventOfCode.Solutions.Day2
     {
         public int Calculate(string input)
         {
-            var lines = input.Split(Environment.NewLine);
+            var rows = input.Split(Environment.NewLine);
 
-            var parsedIntegers = lines
-                .Select(line => line
+            var parsedRows = rows
+                .Select(row => row
                     .Split(new[] {' ', '\t'}, StringSplitOptions.RemoveEmptyEntries)
                     .Select(int.Parse));
 
-            var evenlyDivisible = parsedIntegers.Select(integerRow => FindEvenlyDivisible(integerRow.ToList()));
+            var evenlyDivisible = parsedRows.Select(row => FindEvenlyDivisible(row.ToList()));
 
-            return evenlyDivisible.Select(e => e.Item1 / e.Item2).Sum();
+            return evenlyDivisible.Select(e => e.dividend / e.divisor).Sum();
         }
 
-        private (int, int) FindEvenlyDivisible(IList<int> orderedIntegers)
+        private (int dividend, int divisor) FindEvenlyDivisible(IList<int> orderedIntegers)
         {
-            for (var divisorIndex = 0; divisorIndex < orderedIntegers.Count; divisorIndex++)
+            for (var dividendIndex = 0; dividendIndex < orderedIntegers.Count; dividendIndex++)
             {
-                for (var dividendIndex = 0; dividendIndex < orderedIntegers.Count; dividendIndex++)
+                for (var divisorIndex = 0; divisorIndex < orderedIntegers.Count; divisorIndex++)
                 {
-                    if (dividendIndex == divisorIndex) continue;
+                    if (divisorIndex == dividendIndex) continue;
 
-                    if (orderedIntegers[divisorIndex] % orderedIntegers[dividendIndex] == 0)
-                        return (orderedIntegers[divisorIndex], orderedIntegers[dividendIndex]);
+                    if (orderedIntegers[dividendIndex] % orderedIntegers[divisorIndex] == 0)
+                        return (orderedIntegers[dividendIndex], orderedIntegers[divisorIndex]);
                 }
             }
 
